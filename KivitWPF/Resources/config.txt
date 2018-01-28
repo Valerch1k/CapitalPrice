@@ -1,0 +1,2 @@
+printname=PRP-085III
+timeautoprint=15

@@ -1,0 +1,212 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KivitWPF"
+        xmlns:Viewer="clr-namespace:SAPBusinessObjects.WPF.Viewer;assembly=SAPBusinessObjects.WPF.Viewer" x:Class="KivitWPF.MainWindow"
+        mc:Ignorable="d"
+        Title="PriceListCash" 
+        Height="559" Width="855.917" 
+        WindowStartupLocation="CenterScreen" 
+        Icon="/PriceListCash;component/Resources/printer-pro-iphone.ico">
+    <Grid 
+        KeyUp="Grid_KeyUp" 
+        FocusManager.FocusedElement="{Binding ElementName=txtRegistrInput}">
+
+        <DataGrid x:Name="dgMain" 
+            AutoGenerateColumns="False" 
+            CanUserAddRows="False" 
+            Margin="5,126,5,35"
+            SelectionMode="Extended" 
+            SelectionUnit="FullRow"
+            SelectedCellsChanged="dataGrid_SelectedCellsChanged"
+            PreviewKeyDown="dataGrid_PreviewKeyDown"
+            ItemsSource="{Binding Path=Items, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Background="White">
+            <DataGrid.Columns>
+                <DataGridTextColumn 
+                    Header="Название" 
+                    Binding="{Binding Name}" 
+                    IsReadOnly="True"
+                    Width="300"  />
+                <DataGridTextColumn 
+                    Header="Цена" 
+                    Binding="{Binding Price}" 
+                    IsReadOnly="True" 
+                    Width="110" />
+                <DataGridTextColumn 
+                    Header="Количество" 
+                    Binding="{Binding Count}" 
+                    Width="100" />
+                <DataGridTextColumn 
+                    Header="Код Регистра" 
+                    Binding="{Binding KodRegistr}" 
+                    IsReadOnly="True"
+                    Width="100" />
+                <DataGridTextColumn 
+                    Header="Баркод" 
+                    Binding="{Binding Barcode}" 
+                    IsReadOnly="True" 
+                    Width="130" />
+                <DataGridTextColumn 
+                    Visibility="Hidden" 
+                    Header="ID" 
+                    Binding="{Binding GuiID}" 
+                    IsReadOnly="True" />
+                <DataGridTemplateColumn Width="64">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button 
+                                Name="btnDataGridDeletRow"
+                                Background="Transparent" 
+                                Style="{StaticResource FontAwesome}"
+                                BorderThickness="0" 
+                                FontSize="26" 
+                                Content="&#xf1f8;" 
+                                Foreground="Coral"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Width="40"
+                                Height="30"
+                                Command="{Binding Path=DeleteCommand, 
+                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" 
+                                CommandParameter="{Binding}" ToolTip="Удалить"
+                                Click="btnDataGridDeletRow_Click"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBox 
+            x:Name="txtRegistrInput" 
+            Height="26" 
+            Margin="293,57,0,0" 
+            TextWrapping="Wrap" 
+            Text="" 
+            VerticalAlignment="Top" 
+            HorizontalAlignment="Left" 
+            Width="229" 
+            ToolTip="Введите код регистра или штрихкод"  
+            LostFocus="txtRegistrInput_LostFocus" 
+            GotFocus="txtRegistrInput_GotFocus" 
+            Background="White" 
+            UndoLimit="1000"/>
+        <Label 
+            x:Name="lblReigistr" 
+            Content="Введите код регистра или штрихкод :" 
+            Margin="25,57,0,0" 
+            VerticalAlignment="Top" 
+            FontSize="14" 
+            HorizontalAlignment="Left" 
+            Width="263"/>
+        <Button x:Name="btnUpdate" 
+            Style="{StaticResource FontAwesome}" 
+            Click="btnUpdate_Click" 
+            Foreground="#FF673AB7" 
+            BorderThickness="0" 
+            Background="Transparent" 
+            FontSize="30" 
+            Content="&#xf021;" 
+            Width="52" 
+            Margin="701,54,0,0"  
+            HorizontalAlignment="Left" 
+            Height="33" 
+            VerticalAlignment="Top" 
+            ToolTip="Обновить данные"/>
+        <Button 
+            x:Name="btnPrint" 
+            Content="Печать" 
+            HorizontalAlignment="Left" 
+            Margin="563,54,0,0" 
+            VerticalAlignment="Top" 
+            Width="108" 
+            Click="btnPrint_Click"/>
+        <Menu 
+            x:Name="menu" 
+            Height="41" 
+            VerticalAlignment="Top" 
+            Background="#FF734DAA" >
+            <MenuItem Name="MenuMain" Header="Меню" Foreground="#DDFFFFFF">
+                <MenuItem Name="MenuInstructions" Header="Помощь" Click="MenuInstructions_Click" />
+                <MenuItem Name="MenuChangeConnection" Header=" Изменить подключения" Click="MenuChangeConnection_Click"  />
+                <MenuItem Name="MenuAbout" Header="О программе" Click="MenuAbout_Click" />
+                <MenuItem Name="MenuSetings" Header="Настройки" Click="MenuSetings_Click" />
+                <MenuItem Header="Выход" Click="MenuItem_Click" />
+            </MenuItem>
+        </Menu>
+        <StatusBar Height="30" VerticalAlignment="Bottom" Background="#FF734DAA">
+            <Label x:Name="lblPrinter"
+                   Content="Принтер : "
+                   HorizontalAlignment="Left"
+                   Width="68"
+                   Height="26"
+                   VerticalAlignment="Bottom" 
+                   Foreground="#DDFFFFFF"
+                   FontWeight="Bold"  />
+            <Label x:Name="lblStatus"
+                   HorizontalAlignment="Left"
+                   Width="55"
+                   Height="26"
+                   VerticalAlignment="Bottom" 
+                   Foreground="#DDFFFFFF"
+                   FontWeight="Bold"  />
+            <StatusBarItem 
+                Height="30" 
+                VerticalAlignment="Top" 
+                Width="29" >
+                <Ellipse 
+                    Name="EllipseStatus" 
+                    HorizontalAlignment="Left" 
+                    Height="20" 
+                    VerticalAlignment="Top" 
+                    Width="23"/>
+            </StatusBarItem>
+            <Label x:Name="lblSesion"
+                   Content="Всего строк :"
+                   HorizontalAlignment="Left"
+                   Width="85"
+                   Height="26"
+                   VerticalAlignment="Bottom" 
+                   Foreground="#DDFFFFFF"
+                   FontWeight="Bold"  />
+            <Label x:Name="lbldataGrid" 
+                   Content="{Binding Items.Count, ElementName=dgMain, UpdateSourceTrigger=PropertyChanged}" 
+                   Height="26"
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Left"
+                   Width="31"
+                   Foreground="#DDFFFFFF"
+                   FontWeight="Bold" />
+            <Label x:Name="lblConnectionString"
+                   Content=""
+                   HorizontalAlignment="Left"
+                   Width="504"
+                   Height="26"
+                   VerticalAlignment="Bottom" 
+                   Foreground="#DDFFFFFF"
+                   FontWeight="Bold"  />
+
+
+        </StatusBar>
+        <CheckBox x:Name="chcFromDocument" 
+                  Visibility="Hidden"
+                  Content="Загрузить из накладной" 
+                  Margin="29,92,0,0"  
+                  FontSize="13" 
+                  Height="29" 
+                  VerticalAlignment="Top" 
+                  HorizontalAlignment="Left" 
+                  ToolTip="Выбирете и введите уникальный номер накладной "
+                  Width="206"/>
+        <CheckBox x:Name="chcAutoPrint" 
+                  Content="Автопечать" 
+                  HorizontalAlignment="Left" 
+                  Height="29" 
+                  Margin="563,92,0,0" 
+                  VerticalAlignment="Top" 
+                  FontSize="13" 
+                  Width="108"/>
+    </Grid>
+
+</Window>
